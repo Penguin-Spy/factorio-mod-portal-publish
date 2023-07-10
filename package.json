@@ -1,10 +1,10 @@
 {
   "name": "factorio-mod-portal-publish",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Publishes a Factorio mod to the mod portal using an API token",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "bundle": "ncc build index.js"
   },
   "keywords": [],
   "author": "Penguin_Spy",
