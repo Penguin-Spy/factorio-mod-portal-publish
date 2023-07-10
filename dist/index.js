@@ -9757,7 +9757,7 @@ async function run() {
     core.setFailed(`version in info.json (${info.version}) does not match tag version (${tag})! did you forget to update info.json?`)
     return
   }
-  core.debug(`parsed info.json: ${info}`)
+  core.debug(`parsed info.json: ${JSON.stringify(info)}`)
 
   // ensure a release for this version doesn't already exist on the mod portal
   let res = await lib_axios.get(`https://mods.factorio.com/api/mods/${info.name}`)
@@ -9766,40 +9766,42 @@ async function run() {
     core.warning(`a release for ${info.name} version ${info.version} already exists on the mod portal; skipped uploading this version`)
     return
   }
-  core.debug(`existing release check: ${res.data}`)
+  core.debug(`existing release check: ${JSON.stringify(res.data)}`)
   console.log(`a release for version ${info.version} doesn't exist; proceeding with upload`)
 
   // create the .zip of the mod using git archive to allow customizing what gets put into the .zip
   //git archive --prefix "${NAME}_$INFO_VERSION/" -o "/github/workspace/${NAME}_$INFO_VERSION.zip" "${GIT_TAG}"
   const filename = `${process.env.GITHUB_WORKSPACE}/${info.name}_${info.version}.zip`
   ;(0,external_child_process_namespaceObject.exec)(`git archive --prefix "${info.name}/" -o "${filename}" "${GIT_TAG}"`)
+  const size = (0,external_fs_.statSync)(filename).size
+  console.log(`file zipped, ${size} bytes`)
 
   // get an upload URL for the mod
   //curl -s -d "mod=${NAME}" -H "Authorization: Bearer ${FACTORIO_MOD_API_KEY}" https://mods.factorio.com/api/v2/mods/releases/init_upload
   res = await lib_axios.post("https://mods.factorio.com/api/v2/mods/releases/init_upload", `mod=${info.name}`, AUTH_HEADERS)
   if(res.data.error) {
-    core.setFailed(`getting an upload URL failed: ${res.status} | ${res.data}`)
+    core.setFailed(`getting an upload URL failed: ${res.status} | ${res.data.error}: ${res.data.message}`)
     return
   }
-  core.debug(`got upload url: ${res.data}`)
+  core.debug(`got upload url: ${JSON.stringify(res.data)}`)
 
   // upload the file
   const form = new (form_data_default())()
   form.append("file", (0,external_fs_.createReadStream)(filename))
   res = await lib_axios.post(res.data.upload_url, form, AUTH_HEADERS)
   if(res.data.error) {
-    core.setFailed(`uploading the mod failed: ${res.status} | ${res.data}`)
+    core.setFailed(`uploading the mod failed: ${res.status} | ${res.data.error}: ${res.data.message}`)
     return
   }
-  core.debug(`uploaded mod: ${res.data}`)
+  core.debug(`uploaded mod: ${JSON.stringify(res.data)}`)
 
   console.log(`upload of ${info.name} version ${info.version} succeeded!`)
 }
 
 try {
   run()
-} catch(e) {
-  core.setFailed(`running action failed: ${e}`)
+} catch(error) {
+  core.setFailed(`running action failed: ${error}`)
 }
 })();
 

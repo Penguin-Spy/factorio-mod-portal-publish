@@ -1,6 +1,6 @@
 {
   "name": "factorio-mod-portal-publish",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Publishes a Factorio mod to the mod portal using an API token",
   "main": "index.js",
   "scripts": {
