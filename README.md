@@ -3,34 +3,36 @@
 Builds and publishes tagged releases of a Factorio mod to the Factorio mod portal.
 
 ## Usage
-Currently, this action expects a flat repo structure with exactly one complete mod in the git repo (with a valid info.json in the repo's root).
-
-It also expects tag names to match the Factorio mod version numbering scheme - three numbers separated by periods, eg. `1.15.0`. Versions prefixed with a "v" will also be processed.
-
-Non-tag pushes will be ignored, but when a tag is pushed that is valid and matches the version number in info.json, the mod will be zipped up and published to the mod portal using the required secret `FACTORIO_MOD_API_KEY` to authenticate.
+This action expects a flat repo structure with exactly one complete mod in the git repo (with a valid info.json in the repo's root).  
+It also expects tag names to match the Factorio mod version numbering scheme - three numbers separated by periods, eg. `1.15.0`. Versions prefixed with a "v" will also be processed.  
+When a tag is pushed that is valid and matches the version number in info.json, the mod will be zipped up and published to the mod portal using the required secret `FACTORIO_MOD_API_KEY` to authenticate.
 
 An example workflow to publish tagged releases:
-
-    on: push
-    name: Publish
-    jobs:
-      publish:
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@master
-        - name: Publish Mod
-          uses: Penguin-Spy/factorio-mod-portal-publish@master
-          env:
-            FACTORIO_MOD_API_KEY: ${{ secrets.FACTORIO_MOD_API_KEY }}
-
+```yml
+on:
+  push:
+    tags:
+      - "v*"
+name: Publish to the Factorio mod portal
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Publish mod
+      uses: Penguin-Spy/factorio-mod-portal-publish@main
+      env:
+        FACTORIO_MOD_API_KEY: ${{ secrets.FACTORIO_MOD_API_KEY }}
+```
 
 The `FACTORIO_MOD_API_KEY` secret should be a valid API key generated with the `ModPortal: Upload Mods` usage at https://factorio.com/profile.
 
 A valid `.gitattributes` file is required to filter .git*/* directories. This file must be checked in and tagged to filter during a git-archive operation. It should contain the following entries:
-
-    .gitattributes export-ignore
-    .gitignore export-ignore
-    .github export-ignore
-
+```
+.gitattributes export-ignore
+.gitignore export-ignore
+.github export-ignore
+```
+You should also exclude any other files that are not relevant to the mod running in Factorio. For example, editor configuration files such as `.vscode`, `.editorconfig`, etc.
 
 Be aware that the zip will be published and immediately available for download for users - make sure you're ready to publish the changes and have tested the commit before pushing the tag!

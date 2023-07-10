@@ -1,9 +1,13 @@
 name: 'Factorio Mod Portal API Publish'
 author: 'Penguin_Spy'
 description: 'Publishes a Factorio mod to the mod portal using an API token'
+inputs:
+  factorio-api-key:
+    description: 'Mod Portal API key, see README.md for how to get one'
+    required: true
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: 'node16'
+  main: 'index.js'
 branding:
-  icon: 'settings'  
+  icon: 'settings'
   color: 'purple'
