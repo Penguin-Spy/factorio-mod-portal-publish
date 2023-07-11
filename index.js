@@ -3,7 +3,7 @@ import { exec } from 'child_process'
 import { createReadStream, readFileSync, statSync } from 'fs'
 import axios from 'axios'
 import FormData from 'form-data'
-import promisify from 'node:util'
+import { promisify } from 'node:util'
 const execAsync = promisify(exec);
 
 async function run() {
