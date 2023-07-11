@@ -9731,12 +9731,16 @@ axios.default = axios;
 // this module should only have a default export
 /* harmony default export */ const lib_axios = (axios);
 
+;// CONCATENATED MODULE: external "node:util"
+const external_node_util_namespaceObject = require("node:util");
 ;// CONCATENATED MODULE: ./index.js
 
 
 
 
 
+
+const execAsync = (0,external_node_util_namespaceObject.promisify)(external_child_process_namespaceObject.exec);
 
 async function run() {
   const API_KEY = core.getInput("factorio-api-key", { required: true })
@@ -9772,7 +9776,7 @@ async function run() {
   // create the .zip of the mod using git archive to allow customizing what gets put into the .zip
   //git archive --prefix "${NAME}_$INFO_VERSION/" -o "/github/workspace/${NAME}_$INFO_VERSION.zip" "${GIT_TAG}"
   const filename = `${process.env.GITHUB_WORKSPACE}/${info.name}_${info.version}.zip`
-  ;(0,external_child_process_namespaceObject.exec)(`git archive --prefix "${info.name}/" -o "${filename}" "${GIT_TAG}"`)
+  await execAsync(`git archive --prefix "${info.name}/" -o "${filename}" "${GIT_TAG}"`)
   const size = (0,external_fs_.statSync)(filename).size
   console.log(`file zipped, ${size} bytes`)
 
