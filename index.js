@@ -3,6 +3,8 @@ import { exec } from 'child_process'
 import { createReadStream, readFileSync, statSync } from 'fs'
 import axios from 'axios'
 import FormData from 'form-data'
+import promisify from 'node:util'
+const execAsync = promisify(exec);
 
 async function run() {
   const API_KEY = core.getInput("factorio-api-key", { required: true })
@@ -38,7 +40,7 @@ async function run() {
   // create the .zip of the mod using git archive to allow customizing what gets put into the .zip
   //git archive --prefix "${NAME}_$INFO_VERSION/" -o "/github/workspace/${NAME}_$INFO_VERSION.zip" "${GIT_TAG}"
   const filename = `${process.env.GITHUB_WORKSPACE}/${info.name}_${info.version}.zip`
-  exec(`git archive --prefix "${info.name}/" -o "${filename}" "${GIT_TAG}"`)
+  await execAsync(`git archive --prefix "${info.name}/" -o "${filename}" "${GIT_TAG}"`)
   const size = statSync(filename).size
   console.log(`file zipped, ${size} bytes`)
 
