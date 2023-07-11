@@ -9733,7 +9733,6 @@ axios.default = axios;
 
 ;// CONCATENATED MODULE: external "node:util"
 const external_node_util_namespaceObject = require("node:util");
-var external_node_util_default = /*#__PURE__*/__nccwpck_require__.n(external_node_util_namespaceObject);
 ;// CONCATENATED MODULE: ./index.js
 
 
@@ -9741,7 +9740,7 @@ var external_node_util_default = /*#__PURE__*/__nccwpck_require__.n(external_nod
 
 
 
-const execAsync = external_node_util_default()(external_child_process_namespaceObject.exec);
+const execAsync = (0,external_node_util_namespaceObject.promisify)(external_child_process_namespaceObject.exec);
 
 async function run() {
   const API_KEY = core.getInput("factorio-api-key", { required: true })
