@@ -40,13 +40,9 @@ async function run() {
   // create the .zip of the mod using git archive to allow customizing what gets put into the .zip
   //git archive --prefix "${NAME}_$INFO_VERSION/" -o "/github/workspace/${NAME}_$INFO_VERSION.zip" "${GIT_TAG}"
   const filename = `${process.env.GITHUB_WORKSPACE}/${info.name}_${info.version}.zip`
-  const cmd = `git archive --prefix "${info.name}/" -o "${filename}" "${GIT_TAG}"`
-  console.log(filename, cmd)
-  const { stdout, stderr } = await execAsync(cmd)
-  console.log("stdout: ", stdout, "stderr: ", stderr)
-  const stats = statSync(filename)
-  console.log(stats)
-  console.log(`file zipped, ${stats.size} bytes`)
+  await execAsync(`git archive --prefix "${info.name}/" -o "${filename}" "${GIT_TAG}"`)
+  const size = statSync(filename).size
+  console.log(`file zipped, ${size} bytes`)
 
   // get an upload URL for the mod
   //curl -s -d "mod=${NAME}" -H "Authorization: Bearer ${FACTORIO_MOD_API_KEY}" https://mods.factorio.com/api/v2/mods/releases/init_upload
