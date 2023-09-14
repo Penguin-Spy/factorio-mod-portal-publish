@@ -5,6 +5,10 @@ inputs:
   factorio-api-key:
     description: 'Mod Portal API key, see README.md for how to get one'
     required: true
+  description-file:
+    description: 'File whose contents are to be uploaded as the mod description'
+    required: false
+    default: ''
 runs:
   using: 'node16'
   main: 'dist/index.js'

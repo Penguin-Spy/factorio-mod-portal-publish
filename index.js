@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import { exec } from 'child_process'
-import { createReadStream, readFileSync, statSync } from 'fs'
+import { createReadStream, readFileSync, statSync, existsSync } from 'fs'
 import axios from 'axios'
 import FormData from 'form-data'
 import { promisify } from 'node:util'
@@ -10,6 +10,7 @@ async function run() {
   const API_KEY = core.getInput("factorio-api-key", { required: true })
   core.setSecret(API_KEY) // makes sure the key won't ever be leaked in the logs
   const AUTH_HEADERS = { headers: { "Authorization": `Bearer ${API_KEY}` } }
+  const DESCRIPTION_FILE = core.getInput("description-file", { required: false })
 
   // parse the git tag that triggered this action
   const GIT_TAG = process.env.GITHUB_REF_NAME
@@ -26,6 +27,12 @@ async function run() {
     return
   }
   core.debug(`parsed info.json: ${JSON.stringify(info)}`)
+
+  // check if the provided description file exists
+  if (DESCRIPTION_FILE.length > 0 && !existsSync(DESCRIPTION_FILE)) {
+    core.setFailed(`provided description file (${DESCRIPTION_FILE}) does not exist`)
+    return
+  }
 
   // ensure a release for this version doesn't already exist on the mod portal
   let res = await axios.get(`https://mods.factorio.com/api/mods/${info.name}`)
@@ -56,6 +63,13 @@ async function run() {
   // upload the file
   const form = new FormData()
   form.append("file", createReadStream(filename))
+
+  // append description if it was provided
+  if (DESCRIPTION_FILE.length > 0) {
+    const description = readFileSync(DESCRIPTION_FILE, 'utf8')
+    form.append("description", description)
+  }
+
   res = await axios.post(res.data.upload_url, form, AUTH_HEADERS)
   if(res.data.error) {
     core.setFailed(`uploading the mod failed: ${res.status} | ${res.data.error}: ${res.data.message}`)
