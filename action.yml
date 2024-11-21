@@ -6,7 +6,7 @@ inputs:
     description: 'Mod Portal API key, see README.md for how to get one'
     required: true
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
 branding:
   icon: 'settings'

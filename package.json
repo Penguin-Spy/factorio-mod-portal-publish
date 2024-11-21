@@ -1,6 +1,6 @@
 {
   "name": "factorio-mod-portal-publish",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Publishes a Factorio mod to the mod portal using an API token",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,6 @@
     "form-data": "^4.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.4.1",
     "@vercel/ncc": "^0.36.1"
   }
 }

@@ -18,9 +18,9 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v4
     - name: Publish mod
-      uses: Penguin-Spy/factorio-mod-portal-publish@main
+      uses: Penguin-Spy/factorio-mod-portal-publish@stable
       with:
         factorio-api-key: ${{ secrets.FACTORIO_API_KEY }}
 ```
