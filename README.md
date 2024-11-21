@@ -20,7 +20,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Publish mod
-      uses: Penguin-Spy/factorio-mod-portal-publish@stable
+      uses: Penguin-Spy/factorio-mod-portal-publish@main
       with:
         factorio-api-key: ${{ secrets.FACTORIO_API_KEY }}
 ```
